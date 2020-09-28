@@ -34,7 +34,7 @@ setup(
     description="Data mining project applying the CRISP methodology.",
     entry_points={
         'console_scripts': [
-            'data_mining=data_mining.cli:main',
+            'data_mining=data_mining.cli:entry_point',
         ],
     },
     install_requires=requirements,
