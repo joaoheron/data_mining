@@ -2,7 +2,7 @@
 import sys
 import os
 import click
-from data_mining import crawler
+from data_mining import data_mining
 
 DB_URI = os.environ.get('DB_URI', None)
 
@@ -11,13 +11,32 @@ def verify_environment_variables():
         raise Exception(MESSAGE_ENV_VAR_NOT_SET % ('DB_URI'))
 
 @click.command()
-# @click.option("--folder", "f", default="dataml_demo_app", help="DataML webapp folder name.")
 def extract():
     """
-        Extract data from website
+        Extract data from website.
     """
     try:
-        crawler.extract_data()
+        data_mining.get_data()
+    except Exception as e:
+        raise e
+
+@click.command()
+def integrate():
+    """
+        Integrate data from multiple sources into a single file.
+    """
+    try:
+        data_mining.integrate_data()
+    except Exception as e:
+        raise e
+
+@click.command()
+def clean():
+    """
+        Clean integrated data.
+    """
+    try:
+        data_mining.clean_data()
     except Exception as e:
         raise e
 
@@ -26,6 +45,8 @@ def entry_point():
     pass
 
 entry_point.add_command(extract)
+entry_point.add_command(integrate)
+entry_point.add_command(clean)
 
 if __name__ == "__main__":
     sys.exit(entry_point())  # pragma: no cover

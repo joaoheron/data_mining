@@ -2,6 +2,7 @@ download = 'download/'
 adult_data = 'adult.data'
 adult_names = 'adult.names'
 adult_test = 'adult.test'
+adult_data_test = 'adult.data.test'
 chromedriver_path = 'res/chromedriver'
 url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult/%s'
 

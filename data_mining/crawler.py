@@ -36,8 +36,6 @@ def extract_data():
     # remove old files from /downloads folder
     if os.path.exists(vars.adult_data):
         os.remove(vars.adult_data)
-    if os.path.exists(vars.adult_names):
-        os.remove(vars.adult_names)
     if os.path.exists(vars.adult_test):
         os.remove(vars.adult_test)
     # build options
@@ -48,7 +46,6 @@ def extract_data():
     enable_download_headless(driver, vars.download)
     # navigate to url and downloads files
     driver.get(vars.url_download_data)
-    driver.get(vars.url_download_names)
     driver.get(vars.url_download_test)
     time.sleep(vars.TIMEOUT)
     driver.close
