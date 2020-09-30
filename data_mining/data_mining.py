@@ -89,5 +89,3 @@ def format_data():
     replace_characters('El-Salvador', 'El Salvador')
     replace_characters('Holand-Netherlands', 'Netherlands')
     print('Data has been formatted.')
-
-build_data()
