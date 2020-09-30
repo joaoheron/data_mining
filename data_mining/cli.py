@@ -40,6 +40,16 @@ def clean():
     except Exception as e:
         raise e
 
+@click.command()
+def build_data():
+    """
+        Build data new data from integrated data.
+    """
+    try:
+        data_mining.build_data()
+    except Exception as e:
+        raise e
+
 @click.group()
 def entry_point():
     pass

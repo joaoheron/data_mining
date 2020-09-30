@@ -52,20 +52,15 @@ def integrate_data():
     print(f'Data from {adult_data} and {adult_test} has been appended to {adult_data_test}.')
 
 def clean_data():
-    # Limpar os dados (dados nulos, ausentes, zerados, inválidos, etc..)
     print('Deleting invalid lines...')
     delete_lines(bad_words=["?", "|1x3"], basepath=download, filename=adult_data_test)
     print('Invalid lines deleted.')
 
 def build_data():
-    # <=50K - > 1 e 2 # sex - > F e M
-    print('build_data')
+    print('Building data...')
+    replace_characters('<=50K', '1')
+    replace_characters('>50K', '2')
+    replace_characters('Female', 'F') # Female before Male to don't double replace
+    replace_characters('Male', 'M')
+    print('Data has been builded.')
 
-def format_data():
-    # United-States -> United States
-    # Puerto-Rico -> Puerto Rico
-    # Dominican-Republic -> Dominican Republic
-    # El-Salvador -> El Salvador
-    # Trinadad&Tobago -> Trinadad and Tobago
-    # Holand-Netherlands -> Netherlands
-    print('format_data')
