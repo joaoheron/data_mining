@@ -57,6 +57,7 @@ def entry_point():
 entry_point.add_command(extract)
 entry_point.add_command(integrate)
 entry_point.add_command(clean)
+entry_point.add_command(build_data)
 
 if __name__ == "__main__":
     sys.exit(entry_point())  # pragma: no cover

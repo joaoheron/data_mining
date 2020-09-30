@@ -106,3 +106,5 @@ ENV/
 
 # Downloaded data
 download/*
+
+data_mining.egg-info

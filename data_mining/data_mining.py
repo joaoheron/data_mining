@@ -33,6 +33,7 @@ from data_mining.vars import download, adult_data, adult_test, adult_data_test
 from data_mining import crawler
 from data_mining.utils import (
     append_files,
+    create_continent_column,
     delete_lines,
     replace_characters
 )
@@ -53,14 +54,40 @@ def integrate_data():
 
 def clean_data():
     print('Deleting invalid lines...')
-    delete_lines(bad_words=["?", "|1x3"], basepath=download, filename=adult_data_test)
+    delete_lines(bad_word="?", basepath=download, filename=adult_data_test)
+    delete_lines(bad_word="|1x3", basepath=download, filename=adult_data_test)
+    delete_lines(bad_word="South", basepath=download, filename=adult_data_test)
+    # |1x3: Linhas inválidas do arquivo adult.test
+    # ? : Linhas com valores nulos
+    # South : Linhas com valor inválido para a coluna "country"
     print('Invalid lines deleted.')
 
 def build_data():
     print('Building data...')
+    # Mudança para valores mais facilmente interpretáveis
+    replace_characters('<=50K.', '1')
+    replace_characters('>50K.', '2')
     replace_characters('<=50K', '1')
     replace_characters('>50K', '2')
-    replace_characters('Female', 'F') # Female before Male to don't double replace
+    # Ordem específica do replace da palara "Female" anteriormente à palavra "Male"
+    replace_characters('Female', 'F')
     replace_characters('Male', 'M')
+    # Criação da coluna "continent" baseando-se na coluna "country"
+    create_continent_column(basepath=download, filename=adult_data_test)
     print('Data has been builded.')
 
+def format_data():
+    print('Formatting data...')
+    # Escritos de maneira incorreta
+    replace_characters('Columbia', 'Colombia')
+    replace_characters('Hong', 'Hong Kong')
+    replace_characters('Trinadad&Tobago', 'Trinidad and Tobago')
+    # Remoção do caracter "-" 
+    replace_characters('United-States', 'United States')
+    replace_characters('Puerto-Rico', 'Puerto Rico')
+    replace_characters('Dominican-Republic', 'Dominican Republic')
+    replace_characters('El-Salvador', 'El Salvador')
+    replace_characters('Holand-Netherlands', 'Netherlands')
+    print('Data has been formatted.')
+
+build_data()
