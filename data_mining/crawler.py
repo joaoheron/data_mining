@@ -38,6 +38,8 @@ def extract_data():
         os.remove(vars.adult_data)
     if os.path.exists(vars.adult_test):
         os.remove(vars.adult_test)
+    if os.path.exists(vars.adult_data_test):
+        os.remove(vars.adult_data_test)
     # build options
     chrome_options = build_chrome_options()
     # initialize webdriver
