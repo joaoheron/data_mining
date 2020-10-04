@@ -10,7 +10,6 @@ africa = []
 asia = ['Cambodia', 'India', 'Japan', 'China', 'Iran', 'Philippines', 'Vietnam', 'Laos', 'Taiwan','Thailand', 'Hong']
 central_america = ['Cuba', 'Honduras', 'Jamaica', 'Dominican-Republic', 'Haiti', 'Guatemala', 'Nicaragua', 'El-Salvador', 'Trinadad&Tobago']
 europe = ['Germany', 'England', 'Greece', 'Italy', 'Poland', 'Portugal', 'Ireland', 'France', 'Hungary', 'Scotland', 'Yugoslavia', 'Holand-Netherlands']
-# Porto Rico e United States Minor Outlying Islands são geograficamente localizadas no continente norte americano e não considerados países, mas sim territórios incorporados aos Estados Unidos da América.
 north_america = ['United-States', 'Canada', 'Mexico', 'Puerto-Rico', 'Outlying-US(Guam-USVI-etc)']
 south_america = ['Ecuador', 'Columbia', 'Peru']
 
