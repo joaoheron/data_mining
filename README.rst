@@ -14,17 +14,42 @@ Data Mining
         :alt: Documentation Status
 
 
-
-
 Data mining project applying the CRISP methodology.
 
+### Install application code:
+```bash
+python setup.py install
+```
+
+### Display application accepted inputs:
+```bash
+data_mining --help
+```
+
+### Extract data from UCI Machine Learning repository website:
+```bash
+data_mining extract
+```
+
+### Integrate data from multiple sources into a single file:
+```bash
+data_mining integrate
+```
+
+### Clean integrated data:
+```bash
+data_mining clean
+```
+
+### Build data new data from integrated data:
+```bash
+data_mining build
+```
+
+### Format builded data:
+```bash
+data_mining format-data
+```
 
 * Free software: MIT license
 * Documentation: https://data-mining.readthedocs.io.
-
-
-Features
---------
-
-* TODO
--------
