@@ -17,39 +17,39 @@ Data Mining
 Data mining project applying the CRISP methodology.
 
 * Install application code:
-``
+```
 python setup.py install
-``
+```
 
 * Display application accepted inputs:
-``
+```
 data_mining --help
-``
+```
 
 * Extract data from UCI Machine Learning repository website:
-``
+```
 data_mining extract
-``
+```
 
 * Integrate data from multiple sources into a single file:
-``
+```
 data_mining integrate
-``
+```
 
 * Clean integrated data:
-``
+```
 data_mining clean
-``
+```
 
 * Build data new data from integrated data:
-``
+```
 data_mining build
-``
+```
 
 * Format builded data:
-``
+```
 data_mining format-data
-``
+```
 
 Free software: MIT license
 Documentation: https://data-mining.readthedocs.io.
