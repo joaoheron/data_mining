@@ -33,20 +33,22 @@ def integrate():
 @click.command()
 def clean():
     """
-        Clean integrated data.
+        Clean data removing invalid lines.
     """
     try:
-        data_mining.clean_data()
+        data_mining.clean_data('adult.data')
+        data_mining.clean_data('adult.test')
     except Exception as e:
         raise e
 
 @click.command()
 def build_data():
     """
-        Build data new data from integrated data.
+        Build new information from current data.
     """
     try:
-        data_mining.build_data()
+        data_mining.build_data('adult.data')
+        data_mining.build_data('adult.test')
     except Exception as e:
         raise e
 
@@ -56,7 +58,8 @@ def format_data():
         Format builded data.
     """
     try:
-        data_mining.format_data()
+        data_mining.format_data('adult.data')
+        data_mining.format_data('adult.test')
     except Exception as e:
         raise e
 

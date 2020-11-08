@@ -108,3 +108,5 @@ ENV/
 download/*
 
 data_mining.egg-info
+
+venv/

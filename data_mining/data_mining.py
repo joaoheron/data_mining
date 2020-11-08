@@ -25,32 +25,33 @@ def integrate_data():
     )
     print(f'Data from {adult_data} and {adult_test} has been appended to {adult_data_test}.')
 
-def clean_data():
+def clean_data(filename):
     print('Deleting invalid lines...')
-    delete_lines(bad_word="?", basepath=download, filename=adult_data_test)
-    delete_lines(bad_word="|1x3", basepath=download, filename=adult_data_test)
-    delete_lines(bad_word="South", basepath=download, filename=adult_data_test)
+    delete_lines(bad_word="?", basepath=download, filename=filename)
+    delete_lines(bad_word="|1x3", basepath=download, filename=filename)
+    delete_lines(bad_word="South", basepath=download, filename=filename)
     print('Invalid lines deleted.')
 
-def build_data():
+def build_data(filename):
     print('Building data...')
-    replace_characters('<=50K.', '1')
-    replace_characters('>50K.', '2')
-    replace_characters('<=50K', '1')
-    replace_characters('>50K', '2')
-    replace_characters('Female', 'F')
-    replace_characters('Male', 'M')
-    create_continent_column(basepath=download, filename=adult_data_test)
+    # Training Set
+    replace_characters('<=50K.', '1', filename=filename)
+    replace_characters('>50K.', '2', filename=filename)
+    replace_characters('<=50K', '1', filename=filename)
+    replace_characters('>50K', '2', filename=filename)
+    replace_characters('Female', 'F', filename=filename)
+    replace_characters('Male', 'M', filename=filename)
+    create_continent_column(basepath=download, filename=filename)
     print('Data has been builded.')
 
 def format_data():
     print('Formatting data...')
-    replace_characters('Columbia', 'Colombia')
-    replace_characters('Hong', 'Hong Kong')
-    replace_characters('Trinadad&Tobago', 'Trinidad and Tobago')
-    replace_characters('United-States', 'United States')
-    replace_characters('Puerto-Rico', 'Puerto Rico')
-    replace_characters('Dominican-Republic', 'Dominican Republic')
-    replace_characters('El-Salvador', 'El Salvador')
-    replace_characters('Holand-Netherlands', 'Netherlands')
+    replace_characters('Columbia', 'Colombia', filename=filename)
+    replace_characters('Hong', 'Hong Kong', filename=filename)
+    replace_characters('Trinadad&Tobago', 'Trinidad and Tobago', filename=filename)
+    replace_characters('United-States', 'United States', filename=filename)
+    replace_characters('Puerto-Rico', 'Puerto Rico', filename=filename)
+    replace_characters('Dominican-Republic', 'Dominican Republic', filename=filename)
+    replace_characters('El-Salvador', 'El Salvador', filename=filename)
+    replace_characters('Holand-Netherlands', 'Netherlands', filename=filename)
     print('Data has been formatted.')
