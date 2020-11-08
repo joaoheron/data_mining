@@ -44,7 +44,7 @@ def build_data(filename):
     create_continent_column(basepath=download, filename=filename)
     print('Data has been builded.')
 
-def format_data():
+def format_data(filename):
     print('Formatting data...')
     replace_characters('Columbia', 'Colombia', filename=filename)
     replace_characters('Hong', 'Hong Kong', filename=filename)
