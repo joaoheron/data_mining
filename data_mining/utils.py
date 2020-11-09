@@ -1,4 +1,12 @@
 import os
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn import metrics, preprocessing
+from sklearn.tree import export_graphviz
+from six import StringIO  
+from IPython.display import Image  
+import pydotplus
 from data_mining.vars import (
     download,
     adult_data,
@@ -27,7 +35,7 @@ def apply_lower_case(basepath=download, filename=adult_data_test):
 def create_continent_column(basepath=download, filename=adult_data_test):
     with open(basepath + filename, 'r') as infile, open(basepath + 'outfile', 'w') as outfile:
         for line in infile:
-            outfile.write(line.replace('\n', '') + ', ' + get_continent(str(line)) + '\n')
+            outfile.write(line.replace('\n', '') + ',' + get_continent(str(line)) + '\n')
         infile.close()
         outfile.close()
         os.remove(basepath + filename)
@@ -36,7 +44,6 @@ def create_continent_column(basepath=download, filename=adult_data_test):
 def delete_lines(bad_word='?', basepath=download, filename=adult_data_test):
     with open(basepath + filename, 'r') as infile, open(basepath + 'outfile', 'w') as outfile:
         for line in infile:
-            # Verificando tambem se a linha nao está vazia (tem algumas linhas vazias no source file)
             if (not bad_word in line) and line.strip() != "":
                 outfile.write(line)
             else:
@@ -48,7 +55,7 @@ def delete_lines(bad_word='?', basepath=download, filename=adult_data_test):
 
 def get_continent(line):
     print(f'LINE:{line}')
-    country = line.split(', ', 14)[13]
+    country = line.split(',', 15)[14]
     if country in continents['africa']:
         return 'Africa'
     elif country in continents['asia']:
@@ -79,3 +86,114 @@ def replace_characters(replaced, replace, basepath=download, filename=adult_data
         outfile.close()
         os.remove(basepath + filename)
         os.rename(basepath + 'outfile', basepath + filename)
+
+def create_index(basepath=download, filename=adult_data_test):
+    with open(basepath + filename, 'r') as infile, open(basepath + 'outfile', 'w') as outfile:
+        i = 1
+        for line in infile:
+            outfile.write(str(i) + ',' + str(line))
+            i+=1
+        infile.close()
+        outfile.close()
+        os.remove(basepath + filename)
+        os.rename(basepath + 'outfile', basepath + filename)
+
+def build_decision_tree(training_set=adult_data, test_set=adult_test):
+    col_names = ['age', 'workclass', 'fnlwgt', 'education', 'education-num', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'salary', 'continent']
+    # Loading data set into pandas dataframe
+    df = pd.read_csv(download + training_set, header=None, names=col_names)
+    # df.index = [x for x in range(1, len(df.values)+1)]
+    df.head()
+
+    # Encoding labels into numeric values
+    # Column workclass
+    le_workclass = preprocessing.LabelEncoder()
+    le_workclass.fit(df['workclass'])
+    list(le_workclass.classes_)
+    df['workclass'] = le_workclass.transform(df['workclass'])
+
+    # Column education
+    df = df.drop(columns=['education'])
+
+    # Column marital-status
+    le_marital_status = preprocessing.LabelEncoder()
+    le_marital_status.fit(df['marital-status'])
+    list(le_marital_status.classes_)
+    df['marital-status'] = le_marital_status.transform(df['marital-status'])
+
+    # Column education
+    le_occupation = preprocessing.LabelEncoder()
+    le_occupation.fit(df['occupation'])
+    list(le_occupation.classes_)
+    df['occupation'] = le_occupation.transform(df['occupation'])
+
+    # Column relationship
+    le_relationship = preprocessing.LabelEncoder()
+    le_relationship.fit(df['relationship'])
+    list(le_relationship.classes_)
+    df['relationship'] = le_relationship.transform(df['relationship'])
+
+    # Column race
+    le_race = preprocessing.LabelEncoder()
+    le_race.fit(df['race'])
+    list(le_race.classes_)
+    df['race'] = le_race.transform(df['race'])
+
+    # Column sex
+    le_sex = preprocessing.LabelEncoder()
+    le_sex.fit(df['sex'])
+    list(le_sex.classes_)
+    df['sex'] = le_sex.transform(df['sex'])
+
+    # Column native-country
+    le_native_country = preprocessing.LabelEncoder()
+    le_native_country.fit(df['native-country'])
+    list(le_native_country.classes_)
+    df['native-country'] = le_native_country.transform(df['native-country'])
+
+    # Column salary
+    le_salary = preprocessing.LabelEncoder()
+    le_salary.fit(df['salary'])
+    list(le_salary.classes_)
+    df['salary'] = le_salary.transform(df['salary'])
+
+    # Column continent
+    le_continent = preprocessing.LabelEncoder()
+    le_continent.fit(df['continent'])
+    list(le_continent.classes_)
+    df['continent'] = le_continent.transform(df['continent'])
+
+
+    # split dataset in features(independent) and target variable(dependent)
+    independent_cols = ['education-num', 'marital-status', 'race', 'sex', 'hours-per-week']
+    # ['age', 'workclass', 'fnlwgt', 'education-num', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'continent']
+    X = df[independent_cols] # Features
+    y = df.salary # Target variable
+    print(str(X))
+
+    # Creating random training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1) # 70% training and 30% test
+
+    # Create Decision Tree classifer object
+    clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+
+    # Train Decision Tree Classifer
+    clf = clf.fit(X_train,y_train)
+
+    #Predict the response for test dataset
+    y_pred = clf.predict(X_test)
+
+    print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    dot_data = StringIO()
+    export_graphviz(
+        clf,
+        out_file=dot_data,
+        filled=True,
+        rounded=True,
+        special_characters=True,
+        feature_names=independent_cols,
+        class_names=['0','1']
+    )
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+    graph.write_png('adults.png')
+    Image(graph.create_png())
