@@ -17,7 +17,6 @@ from data_mining.utils import (
     create_index
 )
 
-
 def get_data():
     print('Extracting data from website...')
     crawler.extract_data()

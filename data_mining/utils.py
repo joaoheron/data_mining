@@ -165,9 +165,13 @@ def build_decision_tree(training_set=adult_data, test_set=adult_test):
 
     # split dataset in features(independent) and target variable(dependent)
     independent_cols = ['education-num', 'marital-status', 'race', 'sex', 'hours-per-week']
-    df_independent = df[independent_cols] # Features
-    df_dependent = df.salary # Target variable
+    dependent_cols = ['salary']
+
+    df_independent = df[independent_cols] # Features variables
+    df_dependent = df[dependent_cols] # Target variable
+
     print(str(df_independent))
+    print(str(df_dependent))
 
     # Creating random training and test sets
     x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.3, random_state=1) # 70% training and 30% test
