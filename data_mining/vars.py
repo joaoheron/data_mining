@@ -6,6 +6,25 @@ adult_data_test = 'adult.data.test'
 chromedriver_path = 'res/chromedriver'
 url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult/%s'
 
+adult_col_names = [
+    'age',
+    'workclass',
+    'fnlwgt',
+    'education',
+    'education-num',
+    'marital-status',
+    'occupation',
+    'relationship',
+    'race',
+    'sex',
+    'capital-gain',
+    'capital-loss',
+    'hours-per-week',
+    'native-country',
+    'salary',
+    'continent'
+]
+
 africa = []
 asia = ['Cambodia', 'India', 'Japan', 'China', 'Iran', 'Philippines', 'Vietnam', 'Laos', 'Taiwan','Thailand', 'Hong']
 central_america = ['Cuba', 'Honduras', 'Jamaica', 'Dominican-Republic', 'Haiti', 'Guatemala', 'Nicaragua', 'El-Salvador', 'Trinadad&Tobago']

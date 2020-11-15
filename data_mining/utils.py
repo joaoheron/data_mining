@@ -12,6 +12,7 @@ from data_mining.vars import (
     adult_data,
     adult_test,
     adult_data_test,
+    adult_col_names,
     continents
 )
 
@@ -99,10 +100,9 @@ def create_index(basepath=download, filename=adult_data_test):
         os.rename(basepath + 'outfile', basepath + filename)
 
 def build_decision_tree(training_set=adult_data, test_set=adult_test):
-    col_names = ['age', 'workclass', 'fnlwgt', 'education', 'education-num', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'salary', 'continent']
+    col_names = adult_col_names
     # Loading data set into pandas dataframe
     df = pd.read_csv(download + training_set, header=None, names=col_names)
-    # df.index = [x for x in range(1, len(df.values)+1)]
     df.head()
 
     # Encoding labels into numeric values
@@ -163,27 +163,25 @@ def build_decision_tree(training_set=adult_data, test_set=adult_test):
     list(le_continent.classes_)
     df['continent'] = le_continent.transform(df['continent'])
 
-
     # split dataset in features(independent) and target variable(dependent)
     independent_cols = ['education-num', 'marital-status', 'race', 'sex', 'hours-per-week']
-    # ['age', 'workclass', 'fnlwgt', 'education-num', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'continent']
-    X = df[independent_cols] # Features
-    y = df.salary # Target variable
-    print(str(X))
+    df_independent = df[independent_cols] # Features
+    df_dependent = df.salary # Target variable
+    print(str(df_independent))
 
     # Creating random training and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1) # 70% training and 30% test
+    x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.3, random_state=1) # 70% training and 30% test
 
     # Create Decision Tree classifer object
     clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
 
     # Train Decision Tree Classifer
-    clf = clf.fit(X_train,y_train)
+    clf = clf.fit(x_train, y_train)
 
     #Predict the response for test dataset
-    y_pred = clf.predict(X_test)
+    y_pred = clf.predict(x_test)
 
-    print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
     dot_data = StringIO()
     export_graphviz(
         clf,
