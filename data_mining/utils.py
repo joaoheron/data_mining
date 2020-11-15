@@ -99,10 +99,10 @@ def create_index(basepath=download, filename=adult_data_test):
         os.remove(basepath + filename)
         os.rename(basepath + 'outfile', basepath + filename)
 
-def build_decision_tree(training_set=adult_data, test_set=adult_test):
+def build_decision_tree(data_set=adult_data_test):
     col_names = adult_col_names
     # Loading data set into pandas dataframe
-    df = pd.read_csv(download + training_set, header=None, names=col_names)
+    df = pd.read_csv(download + data_set, header=None, names=col_names)
     df.head()
 
     # Encoding labels into numeric values
