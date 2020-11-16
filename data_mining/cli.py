@@ -3,6 +3,7 @@ import sys
 import os
 import click
 from data_mining import data_mining
+from data_mining.vars import adult_data_test
 
 DB_URI = os.environ.get('DB_URI', None)
 
@@ -33,20 +34,20 @@ def integrate():
 @click.command()
 def clean():
     """
-        Clean integrated data.
+        Clean data removing invalid lines.
     """
     try:
-        data_mining.clean_data()
+        data_mining.clean_data(adult_data_test)
     except Exception as e:
         raise e
 
 @click.command()
 def build_data():
     """
-        Build data new data from integrated data.
+        Build new information from current data.
     """
     try:
-        data_mining.build_data()
+        data_mining.build_data(adult_data_test)
     except Exception as e:
         raise e
 
@@ -56,10 +57,19 @@ def format_data():
         Format builded data.
     """
     try:
-        data_mining.format_data()
+        data_mining.format_data(adult_data_test)
     except Exception as e:
         raise e
 
+@click.command()
+def build_tree():
+    """
+        Build decision tree.
+    """
+    try:
+        data_mining.build_tree(adult_data_test)
+    except Exception as e:
+        raise e
 
 @click.group()
 def entry_point():
@@ -70,6 +80,7 @@ entry_point.add_command(integrate)
 entry_point.add_command(clean)
 entry_point.add_command(build_data)
 entry_point.add_command(format_data)
+entry_point.add_command(build_tree)
 
 if __name__ == "__main__":
     sys.exit(entry_point())  # pragma: no cover

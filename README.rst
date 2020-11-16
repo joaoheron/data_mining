@@ -41,14 +41,14 @@ data_mining integrate
 data_mining clean
 ```
 
-* Build data new data from integrated data:
+* Build new data from integrated data:
 ```
-data_mining build
+data_mining build-data
 ```
 
-* Format builded data:
+* Build decision tree:
 ```
-data_mining format-data
+data_mining build-tree
 ```
 
 Free software: MIT license
