@@ -184,16 +184,15 @@ def build_decision_tree(data_set=adult_data_test):
     # Creating random training and test sets
     x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.3, random_state=1) # 70% training and 30% test
 
-    # Create Decision Tree classifer object
-    clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+    # Create Decision Tree classifier object
+    clf = DecisionTreeClassifier(criterion="entropy", max_depth=9)
 
-    # Train Decision Tree Classifer
+    # Train Decision Tree Classifier
     clf = clf.fit(x_train, y_train)
 
-    #Predict the response for test dataset
+    # Predict the response for test dataset
     y_pred = clf.predict(x_test)
 
-    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
     dot_data = StringIO()
     export_graphviz(
         clf,
@@ -207,3 +206,5 @@ def build_decision_tree(data_set=adult_data_test):
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
     graph.write_png('adults.png')
     Image(graph.create_png())
+
+    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))

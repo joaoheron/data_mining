@@ -48,7 +48,6 @@ def build_data():
     """
     try:
         data_mining.build_data(adult_data_test)
-        # data_mining.build_data('adult.test')
     except Exception as e:
         raise e
 
@@ -59,7 +58,6 @@ def format_data():
     """
     try:
         data_mining.format_data(adult_data_test)
-        # data_mining.format_data('adult.test')
     except Exception as e:
         raise e
 
