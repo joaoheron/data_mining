@@ -110,3 +110,5 @@ download/*
 data_mining.egg-info
 
 venv/
+
+information.txt

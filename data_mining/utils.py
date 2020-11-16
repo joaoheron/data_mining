@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics, preprocessing
+from sklearn.compose import ColumnTransformer
 from sklearn.tree import export_graphviz
 from six import StringIO  
 from IPython.display import Image  
@@ -105,73 +106,80 @@ def build_decision_tree(data_set=adult_data_test):
     df = pd.read_csv(download + data_set, header=None, names=col_names)
     df.head()
 
-    # Encoding labels into numeric values
-    # Column workclass
-    le_workclass = preprocessing.LabelEncoder()
-    le_workclass.fit(df['workclass'])
-    list(le_workclass.classes_)
-    df['workclass'] = le_workclass.transform(df['workclass'])
-
-    # Column education
+    # Dropping Column education because all needed info is on education-num
     df = df.drop(columns=['education'])
 
-    # Column marital-status
-    le_marital_status = preprocessing.LabelEncoder()
-    le_marital_status.fit(df['marital-status'])
-    list(le_marital_status.classes_)
-    df['marital-status'] = le_marital_status.transform(df['marital-status'])
+    # Encoding labels into numeric values using dummies values approach:
+    # Column workclass
+    df_workclass = df['workclass']
+    dummy_workclass_df = pd.get_dummies(df_workclass, columns=['workclass'], prefix='workclass_is')
+    print(str(dummy_workclass_df))
 
-    # Column education
-    le_occupation = preprocessing.LabelEncoder()
-    le_occupation.fit(df['occupation'])
-    list(le_occupation.classes_)
-    df['occupation'] = le_occupation.transform(df['occupation'])
+    # Column marital-status
+    df_marital_status = df['marital-status']
+    dummy_marital_status_df = pd.get_dummies(df_marital_status, columns=['marital-status'], prefix='marital-status_is')
+    print(str(dummy_marital_status_df))
+
+    # Column occupation
+    df_occupation = df['occupation']
+    dummy_occupation_df = pd.get_dummies(df_occupation, columns=['occupation'], prefix='occupation_is')
+    print(str(dummy_occupation_df))
 
     # Column relationship
-    le_relationship = preprocessing.LabelEncoder()
-    le_relationship.fit(df['relationship'])
-    list(le_relationship.classes_)
-    df['relationship'] = le_relationship.transform(df['relationship'])
+    df_relationship = df['relationship']
+    dummy_relationship_df = pd.get_dummies(df_relationship, columns=['relationship'], prefix='relationship_is')
+    print(str(dummy_relationship_df))
 
     # Column race
-    le_race = preprocessing.LabelEncoder()
-    le_race.fit(df['race'])
-    list(le_race.classes_)
-    df['race'] = le_race.transform(df['race'])
+    df_race = df['race']
+    dummy_race_df = pd.get_dummies(df_race, columns=['race'], prefix='race_is')
+    print(str(dummy_race_df))
 
-    # Column sex
+    # Getting everything together
+    transformed_df = df
+
+    # Dropping columns that will not be considered on the model
+    transformed_df = transformed_df.drop(columns=['capital-gain', 'capital-loss', 'native-country', 'continent', 'fnlwgt', 'age'])
+
+    # Replacing categorical column 'workclass' with dummy values
+    transformed_df = transformed_df.drop(columns=['workclass'])
+    transformed_df = transformed_df.join(dummy_workclass_df)
+
+    # Replacing categorical column 'marital-status' with dummy values
+    transformed_df = transformed_df.drop(columns=['marital-status'])
+    transformed_df = transformed_df.join(dummy_marital_status_df)
+
+    # Replacing categorical column 'occupation' with dummy values
+    transformed_df = transformed_df.drop(columns=['occupation'])
+    transformed_df = transformed_df.join(dummy_occupation_df)
+
+    # Replacing categorical column 'relationship' with dummy values
+    transformed_df = transformed_df.drop(columns=['relationship'])
+    transformed_df = transformed_df.join(dummy_relationship_df)
+
+    # Replacing categorical column 'race' with dummy values
+    transformed_df = transformed_df.drop(columns=['race'])
+    transformed_df = transformed_df.join(dummy_race_df)
+
+    # Replacing categorical column 'sex' with values 1 and 0 using LabelEncoder
     le_sex = preprocessing.LabelEncoder()
-    le_sex.fit(df['sex'])
+    le_sex.fit(transformed_df['sex'])
     list(le_sex.classes_)
-    df['sex'] = le_sex.transform(df['sex'])
+    transformed_df['sex'] = le_sex.transform(transformed_df['sex'])
 
-    # Column native-country
-    le_native_country = preprocessing.LabelEncoder()
-    le_native_country.fit(df['native-country'])
-    list(le_native_country.classes_)
-    df['native-country'] = le_native_country.transform(df['native-country'])
-
-    # Column salary
+    # Replacing categorical column 'salary' with values 1 and 0 using LabelEncoder
     le_salary = preprocessing.LabelEncoder()
-    le_salary.fit(df['salary'])
+    le_salary.fit(transformed_df['salary'])
     list(le_salary.classes_)
-    df['salary'] = le_salary.transform(df['salary'])
+    transformed_df['salary'] = le_salary.transform(transformed_df['salary'])
 
-    # Column continent
-    le_continent = preprocessing.LabelEncoder()
-    le_continent.fit(df['continent'])
-    list(le_continent.classes_)
-    df['continent'] = le_continent.transform(df['continent'])
+    print(str(transformed_df))
 
     # split dataset in features(independent) and target variable(dependent)
-    independent_cols = ['education-num', 'marital-status', 'race', 'sex', 'hours-per-week']
-    dependent_cols = ['salary']
+    df_independent = transformed_df.drop(columns=['salary']) # Features variables: All columns but salary
+    df_dependent = transformed_df['salary'] # Target variable: Column salary
 
-    df_independent = df[independent_cols] # Features variables
-    df_dependent = df[dependent_cols] # Target variable
-
-    print(str(df_independent))
-    print(str(df_dependent))
+    independent_columns = df_independent.columns.tolist()
 
     # Creating random training and test sets
     x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.3, random_state=1) # 70% training and 30% test
@@ -193,7 +201,7 @@ def build_decision_tree(data_set=adult_data_test):
         filled=True,
         rounded=True,
         special_characters=True,
-        feature_names=independent_cols,
+        feature_names=independent_columns,
         class_names=['0','1']
     )
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
