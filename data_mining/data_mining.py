@@ -13,9 +13,12 @@ from data_mining.utils import (
     create_continent_column,
     delete_lines,
     replace_characters,
+    build_final_decision_tree,
     build_decision_tree,
     create_index
 )
+
+models = []
 
 def get_data():
     print('Extracting data from website...')
@@ -61,7 +64,15 @@ def format_data(filename):
     replace_characters('Holand-Netherlands', 'Netherlands', filename=filename)
     print('Data has been formatted.')
 
-def build_tree(filename):
+def build_final_tree(filename):
     print('Building decision tree...')
-    build_decision_tree(filename)
+    build_final_decision_tree(filename)
+    print('Decision tree has been built')
+    
+def clear_decision_model():
+    print('cleared')
+
+def build_tree(columns, criterion, splitter, max_depth, min_samples_split, test_size):
+    print('Building decision tree...')
+    build_decision_tree(columns, criterion, splitter, max_depth, min_samples_split, test_size)
     print('Decision tree has been built')

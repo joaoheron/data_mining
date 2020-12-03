@@ -100,7 +100,7 @@ def create_index(basepath=download, filename=adult_data_test):
         os.remove(basepath + filename)
         os.rename(basepath + 'outfile', basepath + filename)
 
-def build_decision_tree(data_set=adult_data_test):
+def build_final_decision_tree(data_set=adult_data_test):
     col_names = adult_col_names
     # Loading data set into pandas dataframe
     df = pd.read_csv(download + data_set, header=None, names=col_names)
@@ -139,7 +139,7 @@ def build_decision_tree(data_set=adult_data_test):
     transformed_df = df
 
     # Dropping columns that will not be considered on the model
-    transformed_df = transformed_df.drop(columns=['capital-gain', 'capital-loss', 'native-country', 'continent', 'fnlwgt', 'age'])
+    transformed_df = transformed_df.drop(columns=['capital-gain', 'relationship', 'occupation', 'race', 'hours-per-week', 'age', 'capital-loss', 'native-country', 'continent', 'fnlwgt', 'sex', 'education-num'])
 
     # Replacing categorical column 'workclass' with dummy values
     transformed_df = transformed_df.drop(columns=['workclass'])
@@ -148,24 +148,6 @@ def build_decision_tree(data_set=adult_data_test):
     # Replacing categorical column 'marital-status' with dummy values
     transformed_df = transformed_df.drop(columns=['marital-status'])
     transformed_df = transformed_df.join(dummy_marital_status_df)
-
-    # Replacing categorical column 'occupation' with dummy values
-    transformed_df = transformed_df.drop(columns=['occupation'])
-    transformed_df = transformed_df.join(dummy_occupation_df)
-
-    # Replacing categorical column 'relationship' with dummy values
-    transformed_df = transformed_df.drop(columns=['relationship'])
-    transformed_df = transformed_df.join(dummy_relationship_df)
-
-    # Replacing categorical column 'race' with dummy values
-    transformed_df = transformed_df.drop(columns=['race'])
-    transformed_df = transformed_df.join(dummy_race_df)
-
-    # Replacing categorical column 'sex' with values 1 and 0 using LabelEncoder
-    le_sex = preprocessing.LabelEncoder()
-    le_sex.fit(transformed_df['sex'])
-    list(le_sex.classes_)
-    transformed_df['sex'] = le_sex.transform(transformed_df['sex'])
 
     # Replacing categorical column 'salary' with values 1 and 0 using LabelEncoder
     le_salary = preprocessing.LabelEncoder()
@@ -182,10 +164,10 @@ def build_decision_tree(data_set=adult_data_test):
     independent_columns = df_independent.columns.tolist()
 
     # Creating random training and test sets
-    x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.3, random_state=1) # 70% training and 30% test
+    x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=0.6, random_state=1) # 70% training and 30% test
 
     # Create Decision Tree classifier object
-    clf = DecisionTreeClassifier(criterion="entropy", max_depth=9)
+    clf = DecisionTreeClassifier(criterion="entropy", max_depth=10, splitter="random")
 
     # Train Decision Tree Classifier
     clf = clf.fit(x_train, y_train)
@@ -204,7 +186,90 @@ def build_decision_tree(data_set=adult_data_test):
         class_names=['0','1']
     )
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
-    graph.write_png('adults.png')
+    graph.write_png('adults_2.png')
+    Image(graph.create_png())
+    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
+
+
+
+def build_decision_tree(columns, criterion, splitter, max_depth, min_samples_split, test_size, data_set=adult_data_test):
+    print(f'Columns: {str(columns)}')
+    print(f'Criterion: {criterion}')
+    print(f'Max depth: {max_depth}')
+    print(f'Min samples split: {str(min_samples_split)}')
+    print(f'Test size: {str(test_size)}')
+
+    col_names = adult_col_names
+    # Loading data set into pandas dataframe
+    df = pd.read_csv(download + data_set, header=None, names=col_names)
+    df.head()
+
+    # Getting everything together
+    transformed_df = df.copy()
+
+    # Dropping columns that will not be considered on the model
+    for col_drop in transformed_df.columns.tolist():
+        if col_drop not in columns and col_drop != 'salary':
+            print("Dropping column: " + col_drop)
+            transformed_df = transformed_df.drop(columns=[col_drop])
+
+    for col in columns:
+        # Encoding labels into numeric values using dummies values approach:
+        # Column col
+        df_col = df[col]
+        dummy_col_df = pd.get_dummies(df_col, columns=[col], prefix=col+'_is')
+        print(str(dummy_col_df))
+
+        # Replacing categorical column 'col' with dummy values
+        transformed_df = transformed_df.drop(columns=[col])
+        transformed_df = transformed_df.join(dummy_col_df)
+
+    print(str(transformed_df))
+
+    # Replacing categorical column 'salary' with values 1 and 0 using LabelEncoder
+    le_salary = preprocessing.LabelEncoder()
+    le_salary.fit(transformed_df['salary'])
+    list(le_salary.classes_)
+    transformed_df['salary'] = le_salary.transform(transformed_df['salary'])
+
+    print('Transformed salary:' + str(transformed_df['salary']))
+
+    # split dataset in features(independent) and target variable(dependent)
+    df_independent = transformed_df.drop(columns=['salary']) # Features variables: All columns but salary
+    df_dependent = transformed_df['salary'] # Target variable: Column salary
+
+    print("Indepentent:" + str(df_independent))
+    print("Dependent: " + str(df_dependent))
+
+    independent_columns = df_independent.columns.tolist()
+
+    # Creating random training and test sets
+    x_train, x_test, y_train, y_test = train_test_split(df_independent, df_dependent, test_size=test_size, random_state=1)
+
+    # Create Decision Tree classifier object
+    clf = DecisionTreeClassifier(criterion=criterion, max_depth=max_depth, min_samples_split=min_samples_split)
+
+    # Train Decision Tree Classifier
+    clf = clf.fit(x_train, y_train)
+
+    # Predict the response for test dataset
+    y_pred = clf.predict(x_test)
+
+    dot_data = StringIO()
+    export_graphviz(
+        clf,
+        out_file=dot_data,
+        filled=True,
+        rounded=True,
+        special_characters=True,
+        feature_names=independent_columns,
+        class_names=['0','1']
+    )
+    filename = '_'.join(columns)
+    filename = filename + f"_{criterion}_{splitter}_{max_depth}_{min_samples_split}.png"
+
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+    graph.write_png(filename)
     Image(graph.create_png())
 
     print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
