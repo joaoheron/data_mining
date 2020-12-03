@@ -48,7 +48,7 @@ data_mining build-data
 
 * Build decision tree:
 ```
-data_mining build-tree
+data_mining build-final-tree
 ```
 
 Free software: MIT license
