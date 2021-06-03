@@ -191,13 +191,12 @@ def build_final_decision_tree(data_set=adult_data_test):
     print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
 
 
-
 def build_decision_tree(columns, criterion, splitter, max_depth, min_samples_split, test_size, data_set=adult_data_test):
-    print(f'Columns: {str(columns)}')
+    print(f'Columns: {columns}')
     print(f'Criterion: {criterion}')
     print(f'Max depth: {max_depth}')
-    print(f'Min samples split: {str(min_samples_split)}')
-    print(f'Test size: {str(test_size)}')
+    print(f'Min samples split: {min_samples_split}')
+    print(f'Test size: {test_size}')
 
     col_names = adult_col_names
     # Loading data set into pandas dataframe
